@@ -1,0 +1,14 @@
+setup-data-in-this-installation,Document
+clients,ClientFolder
+samples,SamplesFolder
+analysisrequests,AnalysisRequestsFolder
+batches,BatchFolder
+worksheets,WorksheetFolder
+arimports,Folder
+referencesamples,ReferenceSamplesFolder
+methods,Methods
+pricelists,PricelistFolder
+supplyorders,SupplyOrderFolder
+bika_setup,BikaSetup
+reports,ReportFolder
+invoices,InvoiceFolder

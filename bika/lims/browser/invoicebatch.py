@@ -1,0 +1,208 @@
+# -*- coding: utf-8 -*-
+#
+# This file is part of Bika LIMS
+#
+# Copyright 2011-2017 by it's authors.
+# Some rights reserved. See LICENSE.txt, AUTHORS.txt.
+
+from bika.lims.browser.bika_listing import BikaListingView
+from bika.lims import bikaMessageFactory as _
+from bika.lims.utils import currency_format
+import csv
+from cStringIO import StringIO
+
+
+class InvoiceBatchInvoicesView(BikaListingView):
+    def __init__(self, context, request):
+        super(InvoiceBatchInvoicesView, self).__init__(context, request)
+        self.context = context
+        self.request = request
+        self.contentFilter = {}
+        self.title = context.Title()
+        self.description = ""
+        self.show_sort_column = False
+        self.show_select_row = False
+        self.show_select_all_checkbox = False
+        self.show_select_column = True
+        self.pagesize = 50
+        request.set('disable_border', 1)
+        self.context_actions = {}
+        self.columns = {
+            'id': {'title': _('Invoice Number'),
+                'toggle': True },
+            'Created': {'title': _('Created'),
+                'toggle': True },
+            'client': {'title': _('Client'),
+                'toggle': True},
+            'email': {'title': _('Email Address'),
+                'toggle': False},
+            'phone': {'title': _('Phone'),
+                'toggle': False},
+            'invoicedate': {'title': _('Invoice Date'),
+                'toggle': True},
+            'startdate': {'title': _('Start Date'),
+                'toggle': False},
+            'enddate': {'title': _('End Date'),
+                'toggle': False},
+            'subtotal': {'title': _('Subtotal'),
+                'toggle': False},
+            'vatamount': {'title': _('VAT'),
+                'toggle': False},
+            'total': {'title': _('Total'),
+                'toggle': True},
+            }
+        self.review_states = [
+            {
+                'id': 'default',
+                'contentFilter': {},
+                'title': _('Default'),
+                'transitions': [],
+                'columns': [
+                    'id',
+                    'Created',
+                    'client',
+                    'email',
+                    'phone',
+                    'invoicedate',
+                    'startdate',
+                    'enddate',
+                    'subtotal',
+                    'vatamount',
+                    'total',
+                ],
+            },
+        ]
+
+    def getInvoices(self, contentFilter):
+        return self.context.objectValues('Invoice')
+
+    def folderitems(self, full_objects=False):
+        currency = currency_format(self.context, 'en')
+        self.show_all = True
+        self.contentsMethod = self.getInvoices
+        items = BikaListingView.folderitems(self, full_objects)
+        for item in items:
+            obj = item['obj']
+            item['replace']['id'] = \
+                "<a href='%s'>%s</a>" % (item['url'], obj.getId())
+
+            client = obj.getClient()
+            if client:
+                item['client'] = client.Title()
+                item['replace']['client'] = "<a href='%s'>%s</a>" % (
+                    (client.absolute_url(), client.Title()))
+                item['email'] = client.getEmailAddress()
+                item['replace']['email'] = "<a href='%s'>%s</a>" % (
+                    'mailto:%s' % client.getEmailAddress(),
+                    client.getEmailAddress())
+                item['phone'] = client.getPhone()
+            else:
+                item['client'] = ''
+                item['email'] = ''
+                item['phone'] = ''
+            item['Created'] = self.ulocalized_time(obj.created())
+            item['invoicedate'] = self.ulocalized_time(obj.getInvoiceDate())
+            item['startdate'] = self.ulocalized_time(obj.getBatchStartDate())
+            item['enddate'] = self.ulocalized_time(obj.getBatchEndDate())
+            item['subtotal'] = currency(obj.getSubtotal())
+            item['vatamount'] = currency(obj.getVATAmount())
+            item['total'] = currency(obj.getTotal())
+        return items
+
+
+class BatchFolderExportCSV(InvoiceBatchInvoicesView):
+    def __call__(self, REQUEST, RESPONSE):
+        """Export invoice batch into csv format.
+        Writes the csv file into the response to allow
+        the file to be streamed to the user.
+        Nothing gets returned.
+        """
+
+        delimiter = ','
+        filename = 'invoice_batch.txt'
+        # Getting the invoice batch
+        container = self.context
+        assert container
+        container.plone_log("Exporting InvoiceBatch to CSV format for PASTEL")
+        # Getting the invoice batch's invoices
+        invoices = self.getInvoices({})
+        if not len(invoices):
+            container.plone_log("InvoiceBatch contains no entries")
+
+        csv_rows = [['Invoice Batch']]
+        # Invoice batch header
+        csv_rows.append(
+            ['ID', container.getId()])
+        csv_rows.append(
+            ['Invoice Batch Title', container.title])
+        csv_rows.append(
+            ['Start Date', container.getBatchStartDate().strftime('%Y-%m-%d')])
+        csv_rows.append(
+            ['End Date', container.getBatchEndDate().strftime('%Y-%m-%d')])
+        csv_rows.append([])
+
+        # Building the invoice field header
+        csv_rows.append(['Invoices'])
+        csv_rows.append([
+            'Invoice ID',
+            'Client ID',
+            'Client Name',
+            'Account Num.',
+            'Phone',
+            'Date',
+            'Total Price'
+        ])
+        invoices_items_rows = []
+        currency = currency_format(self.context, 'en')
+        for invoice in invoices:
+            # Building the invoice field header
+            invoice_info_header = [
+                invoice.getId(),
+                invoice.getClient().getId(),
+                invoice.getClient().getName(),
+                invoice.getClient().getAccountNumber(),
+                invoice.getClient().getPhone(),
+                invoice.getInvoiceDate().strftime('%Y-%m-%d'),
+                currency(invoice.getTotal()),
+            ]
+            csv_rows.append(invoice_info_header)
+            # Obtaining and sorting all analysis items.
+            # These analysis are saved inside a list to add later
+            items = invoice.invoice_lineitems
+            mixed = [(item.get('OrderNumber', ''), item) for item in items]
+            mixed.sort()
+            # Defining each analysis row
+            for line in mixed:
+                invoice_analysis = [
+                    line[1].get('ItemDate', ''),
+                    line[1].get('ItemDescription', ''),
+                    line[1].get('OrderNumber', ''),
+                    line[1].get('Subtotal', ''),
+                    line[1].get('VATAmount', ''),
+                    line[1].get('Total', ''),
+                ]
+                invoices_items_rows.append(invoice_analysis)
+
+        csv_rows.append([])
+        # Creating analysis items header
+        csv_rows.append(['Invoices items'])
+        csv_rows.append(['Date', 'Description', 'Order', 'Amount', 'VAT',
+                         'Amount incl. VAT'])
+        # Adding all invoices items
+        for item_row in invoices_items_rows:
+            csv_rows.append(item_row)
+
+        # convert lists to csv string
+        ramdisk = StringIO()
+        writer = csv.writer(ramdisk, delimiter=delimiter)
+        assert writer
+        writer.writerows(csv_rows)
+        result = ramdisk.getvalue()
+        ramdisk.close()
+        # stream file to browser
+        setheader = RESPONSE.setHeader
+        setheader('Content-Length', len(result))
+        setheader('Content-Type',
+                  'text/x-comma-separated-values')
+        setheader('Content-Disposition', 'inline; filename=%s' % filename)
+        RESPONSE.write(result)
