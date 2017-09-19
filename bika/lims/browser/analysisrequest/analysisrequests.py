@@ -12,6 +12,7 @@ from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 from bika.lims import bikaMessageFactory as _
 from bika.lims.utils import t
 from bika.lims.browser.bika_listing import BikaListingView
+from bika.lims.browser.analysisrequest.analysisrequests_filter_bar import AnalysisRequestsBikaListingFilterBar
 from bika.lims.utils import getUsers
 from bika.lims.workflow import getTransitionDate
 from bika.lims.permissions import *
@@ -68,6 +69,11 @@ class AnalysisRequestsView(BikaListingView):
         mtool = getToolByName(self.context, 'portal_membership')
         member = mtool.getAuthenticatedMember()
         user_is_preserver = 'Preserver' in member.getRoles()
+
+        # Check if the filter bar functionality is activated or not
+        self.filter_bar_enabled =\
+            self.context.bika_setup.\
+            getDisplayAdvancedFilterBarForAnalysisRequests()
 
         self.columns = {
             'getRequestID': {'title': _('Request ID'),
@@ -148,6 +154,11 @@ class AnalysisRequestsView(BikaListingView):
             'getTemplateTitle': {'title': _('Template'),
                                  'index': 'getTemplateTitle',
                                  'toggle': False},
+	    'Printed': {
+                'title': _('Printed'),
+                'sortable': False,
+                'index': 'getPrinted',
+                'toggle': False},
         }
         self.review_states = [
             {'id': 'default',
@@ -478,6 +489,7 @@ class AnalysisRequestsView(BikaListingView):
                         'getDateReceived',
                         'getAnalysesNum',
                         'getDateVerified',
+                        'Printed',
                         'getDatePublished']},
             {'id': 'cancelled',
              'title': _('Cancelled'),
@@ -697,6 +709,10 @@ class AnalysisRequestsView(BikaListingView):
         """
         if not self.context.bika_setup.getAllowDepartmentFiltering():
             return True
+
+        if self.filter_bar_enabled and not self.filter_bar_check_item(obj):
+            return False
+
         # Gettin the department from analysis service
         ans = [an.getObject() for an in obj.getAnalyses()]
         deps = [an.getService().getDepartment().UID() for an in ans if an.getService().getDepartment()]
@@ -933,3 +949,14 @@ class AnalysisRequestsView(BikaListingView):
         self.review_states = new_states
 
         return super(AnalysisRequestsView, self).__call__()
+
+    def getFilterBar(self):
+        """
+        This function creates an instance of BikaListingFilterBar if the
+        class has not created one yet.
+        :returns: a BikaListingFilterBar instance
+        """
+        self._advfilterbar = self._advfilterbar if self._advfilterbar else \
+            AnalysisRequestsBikaListingFilterBar(
+                context=self.context, request=self.request)
+        return self._advfilterbar

@@ -590,6 +590,7 @@ class BikaGenerator:
         addIndex(bac, 'getRawSampleTypes', 'KeywordIndex')
         addIndex(bac, 'getRetested', 'FieldIndex')
         addIndex(bac, 'getReferenceAnalysesGroupID', 'FieldIndex')
+	addIndex(bac, 'getPrinted', 'FieldIndex')
 
         addColumn(bac, 'path')
         addColumn(bac, 'UID')
@@ -692,6 +693,7 @@ class BikaGenerator:
         addIndex(bc, 'getWorksheetTemplateTitle', 'FieldIndex')
         addIndex(bc, 'Priority', 'FieldIndex')
         addIndex(bc, 'BatchUID', 'FieldIndex')
+	addIndex(bc, 'getPrinted', 'FieldIndex')
         addColumn(bc, 'path')
         addColumn(bc, 'UID')
         addColumn(bc, 'id')
@@ -836,6 +838,7 @@ class BikaGenerator:
         addIndex(bsc, 'getMethodID', 'FieldIndex')
         addIndex(bsc, 'getDocumentID', 'FieldIndex')
         addIndex(bsc, 'getMethodUIDs', 'KeywordIndex')
+	addIndex(bsc, 'getPrinted', 'FieldIndex')
 
         addColumn(bsc, 'path')
         addColumn(bsc, 'UID')

@@ -128,6 +128,7 @@
             <table width="100%" cellpadding="0" cellspacing="0" class="noborder nomargin">
               <!-- Filter bar -->
               <tal:filter-bar
+            	  tal:condition="python:view.bika_listing.filter_bar_enabled"
                   tal:content="structure python:view.bika_listing.getFilterBar().render()">
               </tal:filter-bar>
               <!-- workflow state filter -->
@@ -147,6 +148,17 @@
                         tal:content="structure state/title"/>
                   </tal:review_states>
                 </td>
+	            <td class="export-controls">
+	                <span href="#" class='export-toggle' i18n:translate="">Export</span>
+	                <ul>
+	                    <li>
+	                        <a href="" type='csv' tal:attributes="download python:form_id + '.csv'">CSV</a>
+	                    </li>
+	                    <li>
+	                        <a href="" type='xml' tal:attributes="download python:form_id + '.xml'">XML</a>
+	                    </li>
+	                </ul>
+	            </td>
                 <tal:comment replace="nothing">
                   ********************************
                   Filter search

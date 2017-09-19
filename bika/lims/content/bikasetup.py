@@ -740,6 +740,33 @@ schema = BikaFolderSchema.copy() + Schema((
             label=_("Allow users to filter datas by department."),
         )
     ),
+	BooleanField(
+        'DisplayAdvancedFilterBarForAnalysisRequests',
+        schemata="Analyses",
+        default=False,
+        widget=BooleanWidget(
+            label=_(
+                "Display an advanced filter bar in Analysis Requests lists"),
+            description=_(
+                "If enabled, the Analysis Requests Lists will"
+                " display an additional filter bar which allows the user "
+                "to filter the listed items by some several criteria."
+                "Warning: This may affect the listing performance."),
+        ),
+    ),
+    BooleanField(
+        'DisplayAdvancedFilterBarForSamples',
+        schemata="Analyses",
+        default=False,
+        widget=BooleanWidget(
+            label=_("Display an advanced filter bar in Samples lists"),
+            description=_(
+                "If enabled, the Samples Lists will"
+                " display an additional filter bar which allows the user "
+                "to filter the listed items by some several criteria."
+                "Warning: This may affect the listing performance."),
+        ),
+    ),
 ))
 
 schema['title'].validators = ()

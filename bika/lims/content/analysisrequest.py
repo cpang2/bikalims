@@ -1929,6 +1929,30 @@ class AnalysisRequest(BaseFolder):
 
         return False
 
+	security.declareProtected(View, 'getPrinted')	
+
+    def getPrinted(self):
+        """ returns "0", "1" or "2" to indicate Printed state.
+            0 -> Never printed.
+            1 -> Printed after last publish
+            2 -> Printed but republished afterwards.
+        """
+        workflow = getToolByName(self, 'portal_workflow')
+        review_state = workflow.getInfoFor(self, 'review_state', '')
+        if review_state not in ['published']:
+            return "0"
+        report_list=sorted(self.objectValues('ARReport'),key=lambda report: report.getDatePublished())
+        if not report_list:
+            return "0"
+        last_report=report_list[-1]
+        if last_report.getDatePrinted():
+            return "1"
+        else:
+            for report in report_list:
+                if report.getDatePrinted():
+                    return "2"
+        return "0"
+
     security.declareProtected(View, 'getBillableItems')
 
     def getBillableItems(self):
