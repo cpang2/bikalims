@@ -2693,14 +2693,39 @@ class AnalysisRequest(BaseFolder):
             prep_workflows.append([workflow_id, workflow.title])
         return DisplayList(prep_workflows)
 
+    #def getDepartments(self):
+    #    """ Returns a set with the departments assigned to the Analyses
+    #        from this Analysis Request
+    #    """
+    #    ans = [an.getObject() for an in self.getAnalyses()]
+    #    depts = [an.getService().getDepartment() for an in ans if
+    #             an.getService().getDepartment()]
+    #    return set(depts)
+
     def getDepartments(self):
-        """ Returns a set with the departments assigned to the Analyses
-            from this Analysis Request
+        """Returns a list of the departments assigned to the Analyses
+        from this Analysis Request
         """
-        ans = [an.getObject() for an in self.getAnalyses()]
-        depts = [an.getService().getDepartment() for an in ans if
-                 an.getService().getDepartment()]
-        return set(depts)
+        bsc = getToolByName(self, 'bika_setup_catalog')
+        dept_uids = []
+        for an in self.getAnalyses():
+            deptuid = None
+            if hasattr(an, 'getDepartmentUID'):
+                deptuid = an.getDepartmentUID
+            if not deptuid and hasattr(an, 'getObject'):
+    		deptuid = an.getObject().getService().getDepartment().UID()
+                #deptuid = an.getObject().getDepartmentUID()
+            if deptuid:
+                dept_uids.append(deptuid)
+        brains = bsc(portal_type='Department', UID=dept_uids)
+        depts = [b.getObject() for b in brains]
+        return list(set(depts))
+
+    def getDepartmentUIDs(self):
+        """Return a list of the UIDs of departments assigned to the Analyses
+        from this Analysis Request.
+        """
+        return [dept.UID() for dept in self.getDepartments()]
 
     def getResultsInterpretationByDepartment(self, department=None):
         """ Returns the results interpretation for this Analysis Request
