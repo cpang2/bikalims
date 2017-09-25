@@ -707,11 +707,11 @@ class AnalysisRequestsView(BikaListingView):
         @Obj: it is an analysis request object.
         @return: boolean
         """
-        if not self.context.bika_setup.getAllowDepartmentFiltering():
-            return True
-
         if self.filter_bar_enabled and not self.filter_bar_check_item(obj):
             return False
+
+        if not self.context.bika_setup.getAllowDepartmentFiltering():
+            return True
 
         # Gettin the department from analysis service
         ans = [an.getObject() for an in obj.getAnalyses()]
