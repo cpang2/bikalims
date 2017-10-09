@@ -27,3 +27,5 @@ from .decimal import DecimalWidget
 from .rejectionsetupwidget import RejectionSetupWidget
 from .rejectionwidget import RejectionWidget
 from .comboboxwidget import ComboBoxWidget
+from .productsupplierswidget import ProductSuppliersWidget
+from .productsupplierswidget import ProductSuppliersView

@@ -65,6 +65,7 @@ class BikaGenerator:
                        'worksheets',
                        'reports',
                        'arimports',
+		       'storage',
                        ):
             try:
                 obj = portal._getOb(obj_id)
@@ -72,6 +73,7 @@ class BikaGenerator:
                 obj.reindexObject()
             except:
                 pass
+
 
         bika_setup = portal._getOb('bika_setup')
         for obj_id in ('bika_analysiscategories',
@@ -101,6 +103,9 @@ class BikaGenerator:
                        'bika_sampletypes',
                        'bika_srtemplates',
                        'bika_storagelocations',
+		       'bika_storagetypes',
+		       'bika_products',
+                       'bika_stockitems',
                        'bika_subgroups',
                        'bika_suppliers',
                        'bika_referencedefinitions',
@@ -274,6 +279,12 @@ class BikaGenerator:
         mp(ImportInstrumentResults, ['Manager', 'LabManager', 'Analyst'], 1)
 
         mp(ViewLogTab, ['Manager', 'LabManager'], 1)
+
+	mp(AddStorageUnit, ['Manager', 'LabManager', 'LabClerk'], 1)
+        mp(AddManagedStorage, ['Manager', 'LabManager', 'LabClerk'], 1)
+        mp(AddUnmanagedStorage, ['Manager', 'LabManager', 'LabClerk'], 1)
+        mp(AddStoragePosition, ['Manager', 'LabManager', 'LabClerk'], 1)
+
 
         # Bika Setup
         # The `/bika_setup` folder follows the `bika_one_state_workflow`.
@@ -484,6 +495,24 @@ class BikaGenerator:
             portal.arimports.reindexObject()
         except:
             pass
+
+
+	 # /storage folder permissions (StorageUnits)
+        mp = portal.storage.manage_permission
+
+        # Allow authenticated users to see the contents of the client folder
+        mp(permissions.View, ['Authenticated'], 0)
+        mp(permissions.AccessContentsInformation, ['Authenticated'], 0)
+        mp(permissions.ListFolderContents, ['Authenticated'], 0)
+
+        # mp(CancelAndReinstate, ['Manager', 'LabManager', 'LabClerk'], 0)
+        mp(permissions.ListFolderContents, ['Manager', 'LabManager', 'LabClerk'], 0)
+        mp(permissions.AddPortalContent, ['Manager', 'LabManager', 'LabClerk'], 0)
+        mp(permissions.ModifyPortalContent, ['Manager', 'LabManager', 'LabClerk'], 0)
+        mp(permissions.DeleteObjects, ['Manager', 'LabManager'], 0)
+        mp('Access contents information', ['Manager', 'LabManager', 'LabClerk'], 0)
+        mp(permissions.View, ['Manager', 'LabManager', 'LabClerk'], 0)
+        portal.storage.reindexObject()
 
     def setupVersioning(self, portal):
         portal_repository = getToolByName(portal, 'portal_repository')
@@ -774,6 +803,15 @@ class BikaGenerator:
         at.setCatalogsByType('BatchLabel', ['bika_setup_catalog', ])
         at.setCatalogsByType('ARPriority', ['bika_setup_catalog', ])
 
+	at.setCatalogsByType('StorageType', ['bika_setup_catalog'])
+        at.setCatalogsByType('Product', ['bika_setup_catalog'])
+        at.setCatalogsByType('StockItem', ['bika_setup_catalog', ])
+        at.setCatalogsByType('StorageLocation', ['bika_setup_catalog'])
+        at.setCatalogsByType('StorageUnit', ['bika_setup_catalog'])
+        at.setCatalogsByType('ManagedStorage', ['bika_setup_catalog'])
+        at.setCatalogsByType('UnmanagedStorage', ['bika_setup_catalog'])
+        at.setCatalogsByType('StoragePosition', ['bika_setup_catalog'])
+
         addIndex(bsc, 'path', 'ExtendedPathIndex', ('getPhysicalPath'))
         addIndex(bsc, 'allowedRolesAndUsers', 'KeywordIndex')
         addIndex(bsc, 'UID', 'FieldIndex')
@@ -947,8 +985,24 @@ def setupVarious(context):
 
     # Plone's jQuery gets clobbered when jsregistry is loaded.
     setup = site.portal_setup
-    setup.runImportStepFromProfile(
-            'profile-plone.app.jquery:default', 'jsregistry')
-    # setup.runImportStepFromProfile('profile-plone.app.jquerytools:default', 'jsregistry')
+
+    setup.runImportStepFromProfile( 
+            'profile-plone.app.jquery:default', 'jsregistry') 
+    # setup.runImportStepFromProfile('profile-plone.app.jquerytools:default', 'jsregistry') 
 
     create_CAS_IdentifierType(site)
+
+    # Hide some NAV folders that we may not need. Another way is to cleanup files and folders in lims/profiles/default/
+    for x in ['invoices',
+              ]:
+        obj = site[x]
+        obj.schema['excludeFromNav'].set(obj, True)
+        obj.reindexObject()
+
+# Set the order of the nav folders that are still visible
+    for item in reversed(['clients',
+                          'batches',
+                          'analysisrequests',
+                          'pricelists',
+			  'samples']):
+        site.moveObjectsToTop([item])

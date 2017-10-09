@@ -104,6 +104,9 @@
     <element value="ATPathCriterion"/>
     <element value="ATRelativePathCriterion"/>
     <element value="SamplingRound"/>
+    <element value="Product"/>
+    <element value="StockItem"/>
+    <element value="StorageUnit"/>
   </property>
   <property name="enable_wf_state_filtering" type="boolean">False</property>
   <property name="wf_states_to_show" type="lines"/>

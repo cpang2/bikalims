@@ -125,6 +125,14 @@ def initialize(context):
     from content.worksheet import Worksheet
     from content.worksheetfolder import WorksheetFolder
     from content.worksheettemplate import WorksheetTemplate
+    from content.product import Product
+    from content.stockitem import StockItem
+    from content.storagetype import StorageType
+    from content.storageunit import StorageUnit
+    from content.storageunits import StorageUnits
+    from content.managedstorage import ManagedStorage
+    from content.unmanagedstorage import UnmanagedStorage
+    from content.storageposition import StoragePosition
 
     from controlpanel.bika_analysiscategories import AnalysisCategories
     from controlpanel.bika_analysisservices import AnalysisServices
@@ -157,6 +165,9 @@ def initialize(context):
     from controlpanel.bika_subgroups import SubGroups
     from controlpanel.bika_suppliers import Suppliers
     from controlpanel.bika_worksheettemplates import WorksheetTemplates
+    from controlpanel.bika_storagetypes import StorageTypes
+    from controlpanel.bika_products import Products
+    from controlpanel.bika_stockitems import StockItems
 
     content_types, constructors, ftis = process_types(
         listTypes(PROJECTNAME),

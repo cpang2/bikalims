@@ -49,6 +49,8 @@ from bika.lims.utils.analysisrequest import notify_rejection
 from bika.lims.browser.fields import DateTimeField
 from bika.lims.browser.widgets import SelectionWidget as BikaSelectionWidget
 
+from bika.lims.interfaces import ISampleStorageLocation
+
 import sys
 
 try:
@@ -881,8 +883,8 @@ schema = BikaSchema.copy() + Schema((
     ),
     ReferenceField(
         'StorageLocation',
-        allowed_types='StorageLocation',
-        relationship='AnalysisRequestStorageLocation',
+	allowed_types='StoragePosition',
+	relationship='ItemStorageLocation',
         mode="rw",
         read_permission=permissions.View,
         write_permission=permissions.ModifyPortalContent,
@@ -914,7 +916,12 @@ schema = BikaSchema.copy() + Schema((
                 'rejected': {'view': 'visible', 'edit': 'invisible'},
             },
             catalog_name='bika_setup_catalog',
-            base_query={'inactive_state': 'active'},
+ 	    base_query={'inactive_state': 'active',
+                            'review_state': 'available',
+                            'object_provides': ISampleStorageLocation.__identifier__},
+	    colModel=[{'columnName': 'UID', 'hidden': True},
+                          {'columnName': 'Title', 'width': '50', 'label': _('Title')}
+                          ],
             showOn=True,
         ),
     ),

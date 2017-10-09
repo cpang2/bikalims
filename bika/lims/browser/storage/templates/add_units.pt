@@ -1,0 +1,168 @@
+<html>
+<head>
+    <script tal:attributes="src python:context.absolute_url() + '/bika_widgets/referencewidget.js'"
+            type="text/javascript"></script>
+</head>
+<body>
+<style type="text/css">
+    .add-storageunits .discreet{
+      font-size:50%;
+      color:#ddd;
+    }
+    .add-storageunits input{
+      margin-bottom:5px;
+    }
+    /*The collapse-header is positioned upwards, compensate here with margin.
+    extra compensation since we only use the one collapsible, and we want to
+    position it away from the green-bar.
+    */
+    .collapsible {
+      margin-top: 2em !important;
+    }
+    .discreet li {padding:0;margin:0;line-height:1em !important;}
+    td {padding:10px 10px 0 0;}
+</style>
+
+<table>
+    <tr>
+        <td><strong>Prefix Text</strong>
+            <div class="discreet">
+                The display titles and IDs for new storage units. Provide the prefix to
+                be append to the leading zeros number.
+            </div>
+        </td>
+        <td><input name="units-prefix-text"
+                   class="prefixtext"
+                   placeholder="Prefix text"
+                   tal:attributes="value python: request.get('units-prefix-text', '')"/>
+        </td>
+
+    <tr>
+    <tr>
+        <td><strong>Leading Zeros</strong>
+            <div class="discreet">
+                Prepend zeros to the sequence ID of the storage units to create, ex: 00
+            </div>
+        </td>
+        <td><input name="units-leading-zeros"
+                   class="leading-zeros"
+                   placeholder="Leading zeros"
+                   tal:attributes="value python: request.get('units-leading-zeros', '')"/>
+        </td>
+    </tr>
+    <tr>
+        <td><strong>ID Sequence Start</strong></td>
+        <td>
+            <input name="units_start"
+                   class="start"
+                   type="number"
+                   tal:attributes="value python: request.get('units_start', '1')"/>
+        </td>
+    </tr>
+    <tr>
+        <td><strong>How many items of this type to create</strong>
+            <div class="discreet">
+                The maximum number of storage units to create.
+            </div>
+        </td>
+        <td>
+            <input name="units_nr_items"
+                   class="nr_items"
+                   type="number"
+                   tal:attributes="value python: request.get('units_nr_items', '1')"/>
+        </td>
+    </tr>
+    <tr tal:condition="python:False">
+        <td><strong>Temperature</strong>
+            <div class="discreet">
+                If these storage units have individually controlled temperatures
+                which are different to the temperature of their parent unit,
+                then enter their temperature.
+            </div>
+        </td>
+        <td>
+            <input name="units_temperature"
+                   class="temperature"
+                   tal:attributes="value python: request.get('units_temperature', '')"/>
+        </td>
+    </tr>
+    <tr>
+        <td><strong>Storage-unit type</strong>
+        </td>
+        <td>
+            <div style="width:100%" class="field ArchetypesReferenceWidget">
+                <input
+                        type="text"
+                        name="units_type"
+                        id="units_type"
+                        class="blurrable firstToFocus referencewidget"
+                        value=""
+                        base_query='{"portal_type": "StorageType", "inactive_state": "active"}'
+                        search_query='{}'
+                        catalog_name="bika_setup_catalog"
+                        ui_item="Title"
+                        autocomplete="false"
+                        combogrid_options='{"colModel": [{"columnName": "Title", "align": "left", "label": "Storage Type Title", "width": "100"},
+                                            {"columnName": "UID", "hidden": true}],
+                                "search_fields": ["Title"],
+                                "catalog_name": "bika_setup_catalog",
+                                "url": "referencewidget_search",
+                                "discard_empty": [],
+                                "popup_width": "550px",
+                                "showOn": true,
+                                "searchIcon": true,
+                                "minLength": "0",
+                                "resetButton": false,
+                                "sord": "asc",
+                                "sidx": "Title",
+                                "force_all": true,
+                                "portal_types": {}}'/>
+                <input type="hidden" name="units_type_uid" id="units_type_uid">
+            </div>
+        </td>
+    </tr>
+    <tr tal:condition="python:view.show_department()">
+        <td><strong>Facility</strong>
+            <div class="discreet">
+                The department containing the storage unit.
+            </div>
+        </td>
+        <td>
+            <div style="width:100%" class="field ArchetypesReferenceWidget">
+                <input
+                        type="text"
+                        name="units_department"
+                        id="units_department"
+                        class="blurrable firstToFocus referencewidget"
+                        value=""
+                        base_query='{"portal_type": "Department", "inactive_state": "active"}'
+                        search_query='{}'
+                        catalog_name="bika_setup_catalog"
+                        ui_item="Title"
+                        autocomplete="false"
+                        combogrid_options='{"colModel": [{"columnName": "Title", "align": "left", "label": "Department Title", "width": "100"},
+                                            {"columnName": "UID", "hidden": true}],
+                                "search_fields": ["Title"],
+                                "catalog_name": "bika_setup_catalog",
+                                "url": "referencewidget_search",
+                                "discard_empty": [],
+                                "popup_width": "550px",
+                                "showOn": true,
+                                "searchIcon": true,
+                                "minLength": "0",
+                                "resetButton": false,
+                                "sord": "asc",
+                                "sidx": "Title",
+                                "force_all": true,
+                                "portal_types": {}}'/>
+                <input type="hidden" name="units_department_uid" id="units_department_uid">
+            </div>
+        </td>
+    </tr>
+</table>
+
+
+</body>
+</html>
+
+

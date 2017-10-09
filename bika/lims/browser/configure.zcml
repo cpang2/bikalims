@@ -52,6 +52,8 @@
   <include package=".widgets"/>
   <include package=".reports"/>
 
+  <include package=".storage"/>
+
   <browser:page
       for="*"
       name="aggregatedanalyses"

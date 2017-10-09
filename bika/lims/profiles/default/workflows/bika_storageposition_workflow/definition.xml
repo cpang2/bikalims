@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<dc-workflow xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+             workflow_id="bika_storageposition_workflow"
+             title="Bika Storage Position Workflow"
+             description=""
+             state_variable="review_state"
+             initial_state="available"
+             manager_bypass="False"
+             i18n:domain="bika">
+
+  <permission>Modify portal content</permission>
+  <permission>View</permission>
+
+  <state state_id="available" title="Available" i18n:attributes="title">
+    <exit-transition transition_id="occupy" />
+    <exit-transition transition_id="reserve" />
+    <permission-map name="Modify portal content" acquired="False">
+      <permission-role>LabManager</permission-role>
+      <permission-role>Manager</permission-role>
+    </permission-map>
+    <permission-map name="View" acquired="False">
+      <permission-role>LabManager</permission-role>
+      <permission-role>Manager</permission-role>
+      <permission-role>Owner</permission-role>
+      <permission-role>Analyst</permission-role>
+      <permission-role>LabClerk</permission-role>
+    </permission-map>
+  </state>
+
+  <state state_id="occupied" title="Occupied" i18n:attributes="title">
+    <exit-transition transition_id="liberate" />
+    <permission-map name="Modify portal content" acquired="False">
+      <permission-role>LabManager</permission-role>
+      <permission-role>Manager</permission-role>
+    </permission-map>
+    <permission-map name="View" acquired="False">
+      <permission-role>LabManager</permission-role>
+      <permission-role>Manager</permission-role>
+      <permission-role>Owner</permission-role>
+      <permission-role>Analyst</permission-role>
+      <permission-role>LabClerk</permission-role>
+    </permission-map>
+  </state>
+
+  <state state_id="reserve" title="Reserve" i18n:attributes="title">
+    <exit-transition transition_id="liberate" />
+    <exit-transition transition_id="occupy" />
+    <permission-map name="Modify portal content" acquired="False">
+      <permission-role>LabManager</permission-role>
+      <permission-role>Manager</permission-role>
+    </permission-map>
+    <permission-map name="View" acquired="False">
+      <permission-role>LabManager</permission-role>
+      <permission-role>Manager</permission-role>
+      <permission-role>Owner</permission-role>
+      <permission-role>Analyst</permission-role>
+      <permission-role>LabClerk</permission-role>
+    </permission-map>
+  </state>
+
+  <transition transition_id="reserve" title="Reserve" new_state="reserved" trigger="USER" before_script="" after_script="" i18n:attributes="title">
+    <guard>
+    </guard>
+  </transition>
+
+  <transition transition_id="occupy" title="Occupy" new_state="occupied" trigger="USER" before_script="" after_script="" i18n:attributes="title">
+    <guard>
+    </guard>
+  </transition>
+
+  <transition transition_id="liberate" title="Liberate" new_state="available" trigger="USER" before_script="" after_script="" i18n:attributes="title">
+    <guard>
+    </guard>
+  </transition>
+
+</dc-workflow>

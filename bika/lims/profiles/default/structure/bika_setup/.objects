@@ -31,3 +31,6 @@ bika_srtemplates,SRTemplates
 bika_subgroups,SubGroups
 bika_suppliers,Suppliers
 bika_worksheettemplates,WorksheetTemplates
+bika_storagetypes,StorageTypes
+bika_products,Products
+bika_stockitems,StockItems

@@ -38,6 +38,8 @@ from bika.lims.browser.fields import DateTimeField
 from bika.lims.browser.widgets import ReferenceWidget
 from bika.lims.browser.widgets import SelectionWidget as BikaSelectionWidget
 
+from bika.lims.interfaces import ISampleStorageLocation
+
 import sys
 from bika.lims.utils import to_unicode
 
@@ -194,15 +196,15 @@ schema = BikaSchema.copy() + Schema((
     ),
     ReferenceField(
         'StorageLocation',
-        allowed_types='StorageLocation',
-        relationship='AnalysisRequestStorageLocation',
+        allowed_types='StoragePosition',
+	relationship='ItemStorageLocation',
         mode="rw",
         read_permission=permissions.View,
         write_permission=permissions.ModifyPortalContent,
         widget=ReferenceWidget(
             label=_("Storage Location"),
             description=_("Location where sample is kept"),
-            size=20,
+            size=40,
             render_own_label=True,
             visible={'edit': 'visible',
                      'view': 'visible',
@@ -219,8 +221,13 @@ schema = BikaSchema.copy() + Schema((
                      'rejected':          {'view': 'visible', 'edit': 'invisible'},
                      },
             catalog_name='bika_setup_catalog',
-            base_query={'inactive_state': 'active'},
             showOn=True,
+	    base_query={'inactive_state': 'active',
+                            'review_state': 'available',
+                            'object_provides': ISampleStorageLocation.__identifier__},
+	    colModel=[{'columnName': 'UID', 'hidden': True},
+                          {'columnName': 'Title', 'width': '50', 'label': _('Title')}
+                          ],
         ),
     ),
     BooleanField('SamplingWorkflowEnabled',

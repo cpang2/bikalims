@@ -1203,6 +1203,51 @@ class Storage_Locations(WorksheetImporter):
             obj.unmarkCreationFlag()
             renameAfterCreation(obj)
 
+class Products(WorksheetImporter):
+    """ Import test products
+    """
+    def Import(self):
+        folder = self.context.bika_setup.bika_products
+        rows = self.get_rows(3)
+        bsc = getToolByName(self.context, 'bika_setup_catalog')
+        suppliers = [o.getObject() for o in bsc(portal_type="Supplier")]
+        for row in rows:
+            title = row.get('Title')
+            description = row.get('description', '')
+            obj = _createObjectByType('Product', folder, tmpID())
+            obj.edit(
+                title=title,
+                description=description,
+                Hazardous=self.to_bool(row.get('Hazardous', '')),
+                Quantity=self.to_int(row.get('Quantity', 0)),
+                Unit=row.get('Unit', ''),
+                Price=str(row.get('Price', '0.00'))
+            )
+
+            for supplier in suppliers:
+                if supplier.Title() == row.get('Suppliers', ''):
+                    obj.setSupplier(supplier)
+                    break
+
+            obj.unmarkCreationFlag()
+            renameAfterCreation(obj)
+
+class Storage_Types(WorksheetImporter):
+    """Add some dummy product categories
+    """
+    def Import(self):
+        folder = self.context.bika_setup.bika_storagetypes
+        rows = self.get_rows(3)
+        for row in rows:
+            title = row.get('title')
+            description = row.get('description', '')
+            obj = _createObjectByType('StorageType', folder, tmpID())
+            obj.edit(
+                title=title,
+                description=description
+            )
+            obj.unmarkCreationFlag()
+            renameAfterCreation(obj)
 
 class Sample_Conditions(WorksheetImporter):
 

@@ -1,0 +1,112 @@
+<html>
+<body>
+<style type="text/css">
+    .add-unmanaged{
+      padding: 10px 0px;
+    }
+    .add-unmanaged .discreet{
+      font-size:50%;
+      color:#ddd;
+    }
+    .add-unmanaged input{
+      margin-bottom:5px;
+    }
+    .discreet li {
+        padding:0;
+        margin:0;
+        line-height:1em !important;
+    }
+    table {
+        width:100%;
+    }
+    td {
+        padding:5px 10px 5px 0;
+    }
+    td.bordertop {
+        border-top: 1px solid #ddd;
+    }
+
+    select.storage_types {margin-left:15px;}
+
+</style>
+
+
+<table>
+    <tr>
+        <td><strong>Prefix Text</strong>
+            <div class="discreet">
+                The display titles and IDs for new storage units. Provide the prefix to
+                be append to the leading zeros number.
+            </div>
+        </td>
+        <td><input name="unmanaged-prefix-text"
+                   class="prefixtext"
+                   placeholder="Prefix text"
+                   tal:attributes="value python: request.get('unmanaged-prefix-text', '')"/>
+        </td>
+
+    <tr>
+    <tr>
+        <td><strong>Leading Zeros</strong>
+            <div class="discreet">
+                Prepend the zeros specified here to the sequence numbers of the storage units to create, ex: 00
+            </div>
+        </td>
+        <td><input name="unmanaged-leading-zeros"
+                   class="leading-zeros"
+                   placeholder="Leading zeros"
+                   tal:attributes="value python: request.get('unmanaged-leading-zeros', '')"/>
+        </td>
+    </tr>
+    <tr>
+        <td><strong>ID Sequence Start</strong>
+            <div class="discreet">
+                The number of the first item in the ID sequence. This can be a
+                simple number like '1', or it can be a string like 'A' or 'AA'.
+            </div>
+        </td>
+        <td>
+            <input name="unmanaged-start"
+                   type="number"
+                   class="start"
+                   tal:attributes="value python: request.get('unmanaged-start', '1')"/>
+        </td>
+    </tr>
+    <tr>
+        <td><strong>Maximum number of unmanaged storage</strong>
+            <div class="discreet">
+                The maximum number of unmanaged storage to create.
+            </div>
+        </td>
+        <td>
+            <input name="unmanaged-nr-items"
+                   class="nr_items"
+                   type="number"
+                   tal:attributes="value python: request.get('unmanaged-nr-items', '1')"/>
+        </td>
+    </tr>
+    <tr>
+        <td><strong>Storage Types</strong>
+            <div class="discreet">
+                Select the types of objects that can be stored here.
+            </div>
+        </td>
+        <td>
+            <select id="umanaged-storage-types" name="umanaged-storage-types" style="width: 180px;">
+                <tal:x tal:repeat="stype python:context.getStorageTypes(name_adapter='bika.lims.unmanagedstoragetypes', show_all=True)">
+                    <option tal:attributes="value python:stype['identifier']">
+                        <tal:t tal:replace="python: stype['title']"/>
+                    </option>
+                </tal:x>
+            </select>
+        </td>
+    </tr>
+
+
+</table>
+
+
+</body>
+</html>
+
+

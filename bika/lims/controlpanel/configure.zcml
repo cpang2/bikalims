@@ -101,6 +101,14 @@
     />
 
     <browser:page
+        for="bika.lims.interfaces.IStorageTypes"
+        name="folder_view"
+        class=".bika_storagetypes.StorageTypesView"
+        permission="bika.lims.ManageBika"
+        layer="bika.lims.interfaces.IBikaLIMS"
+    />
+
+    <browser:page
       for="bika.lims.interfaces.ISamplePoints"
       name="folder_view"
       class=".bika_samplepoints.SamplePointsView"
@@ -292,6 +300,22 @@
       class=".bika_sampletypes.ajax_SampleTypes"
       permission="zope.Public"
       layer="bika.lims.interfaces.IBikaLIMS"
+    />
+
+    <browser:page
+        for="bika.lims.interfaces.IProducts"
+        name="folder_view"
+        class=".bika_products.ProductsView"
+        permission="bika.lims.ManageBika"
+        layer="bika.lims.interfaces.IBikaLIMS"
+    />
+
+    <browser:page
+        for="bika.lims.interfaces.IStockItems"
+        name="folder_view"
+        class=".bika_stockitems.StockItemsView"
+        permission="bika.lims.ManageBika"
+        layer="bika.lims.interfaces.IBikaLIMS"
     />
 
 </configure>

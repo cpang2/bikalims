@@ -12,3 +12,4 @@ supplyorders,SupplyOrderFolder
 bika_setup,BikaSetup
 reports,ReportFolder
 invoices,InvoiceFolder
+storage,StorageUnits

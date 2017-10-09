@@ -55,5 +55,12 @@
   <type portal_type="Supplier"/>
   <type portal_type="SupplierContact"/>
   <type portal_type="WorksheetTemplate"/>
+  <type portal_type="StorageType"/>
+  <type portal_type="StorageUnit"/>
+  <type portal_type="ManagedStorage"/>
+  <type portal_type="UnmanagedStorage"/>
+  <type portal_type="StoragePosition"/>
+  <type portal_type="Product"/>
+  <type portal_type="StockItem"/>
  </factorytypes>
 </object>

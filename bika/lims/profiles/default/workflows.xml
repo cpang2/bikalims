@@ -515,5 +515,43 @@
       <bound-workflow workflow_id="bika_cancellation_workflow"/>
     </type>
 
+    <type type_id="StorageTypes"/>
+    <type type_id="StorageType">
+        <bound-workflow workflow_id="bika_one_state_workflow"/>
+        <bound-workflow workflow_id="bika_inactive_workflow"/>
+    </type>
+
+    <type type_id="Products"/>
+    <type type_id="Product">
+        <bound-workflow workflow_id="bika_one_state_workflow"/>
+        <bound-workflow workflow_id="bika_inactive_workflow"/>
+    </type>
+
+    <type type_id="StockItems" />
+    <type type_id="StockItem">
+        <bound-workflow workflow_id="bika_stockitem_workflow"/>
+    </type>
+
+    <type type_id="StorageUnits"/>
+    <type type_id="StorageUnit">
+        <bound-workflow workflow_id="bika_one_state_workflow"/>
+        <bound-workflow workflow_id="bika_inactive_workflow"/>
+    </type>
+
+    <type type_id="ManagedStorage">
+        <bound-workflow workflow_id="bika_storage_workflow"/>
+        <bound-workflow workflow_id="bika_inactive_workflow"/>
+    </type>
+
+    <type type_id="UnmanagedStorage">
+        <bound-workflow workflow_id="bika_storage_workflow"/>
+        <bound-workflow workflow_id="bika_inactive_workflow"/>
+    </type>
+
+    <type type_id="StoragePosition">
+        <bound-workflow workflow_id="bika_storageposition_workflow"/>
+        <bound-workflow workflow_id="bika_inactive_workflow"/>
+    </type>
+
   </bindings>
 </object>

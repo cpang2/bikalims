@@ -42,6 +42,10 @@ AddSamplingDeviation = 'BIKA: Add SamplingDeviation'
 AddSamplingRound = 'BIKA: Add SamplingRound'
 AddSRTemplate = 'BIKA: Add SRTemplate'
 AddSubGroup = 'BIKA: Add Sub-group'
+AddStorageUnit = 'BIKA: Add Storage Unit'
+AddManagedStorage = 'BIKA: Add Managed Storage'
+AddUnmanagedStorage = 'BIKA: Add Unmanaged Storage'
+AddStoragePosition = 'BIKA: Add Storage Position'
 
 # Default Archetypes Add Permission
 ADD_CONTENT_PERMISSION = AddPortalContent
@@ -65,6 +69,10 @@ ADD_CONTENT_PERMISSIONS = {
     'SamplingDeviation': AddSamplingDeviation,
     'SamplingRound': AddSamplingRound,
     'SubGroup': AddSubGroup,
+    'StorageUnit': AddStorageUnit,
+    'ManagedStorage': AddManagedStorage,
+    'UnmanagedStorage': AddUnmanagedStorage,
+    'StoragePosition': AddStoragePosition,
 }
 
 # Very Old permissions:
@@ -176,3 +184,6 @@ ManageARImport = 'BIKA: Manage ARImport'
 # Manage AR Priorities
 # ----------------------------------------------
 ManageARPriority = 'BIKA: Manage ARPriority'
+
+ManageStoragePositions = 'BIKA: Manage Storage Positions'
+

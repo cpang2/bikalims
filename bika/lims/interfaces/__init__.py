@@ -708,6 +708,65 @@ class ISamplePrepWorkflow(Interface):
 class ICustomPubPref(Interface):
     ""
 
+class IStorageUnit(Interface):
+    """
+    """
+
+class IStorageUnits(Interface):
+    """
+    """
+
+class IStorageTypeRegistration(Interface):
+    """
+    """
+
+class IManagedStorage(Interface):
+    """Base for all storage types.
+    """
+
+class IUnmanagedStorage(Interface):
+    """Base for all storage types.
+    """
+
+class IStockItem(Interface):
+    """
+    Interface for StockItem class.
+    """
+
+class IStockItems(Interface):
+    """
+    Interface for StockItems class.
+    """
+
+class IStockItemStorage(Interface):
+    """A StorageLocation or StorageLevel that can store StockItems must
+    provide this interface"""
+
+class ISampleStorageLocation(Interface):
+    """Interface for sample storage location"""
+
+
+class IProduct(Interface):
+    """
+    Interface for Product.
+    """
+
+class IProducts(Interface):
+    """
+    Interface for Products.
+    """
+
+class IStoragePosition(Interface):
+    """This is the marker interface applied StorageLocation items.  This is
+    only a marker for the StorageLocation type itself, it does not signify
+    a 'type' of storage.
+    """
+
+class IStorageType(Interface):
+    """Marker interface for StorageType"""
+
+class IStorageTypes(Interface):
+    """Marker interface for StorageTypes"""
 
 class IAcquireFieldDefaults(Interface):
     """Register this adapter to define if and how the value for a field is
