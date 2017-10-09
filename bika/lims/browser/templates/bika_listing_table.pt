@@ -157,6 +157,9 @@
 	                    <li>
 	                        <a href="" type='xml' tal:attributes="download python:form_id + '.xml'">XML</a>
 	                    </li>
+			    <li tal:condition="python:view.context.portal_type=='AnalysisRequestsFolder'">
+	                        <a href="" type='result' tal:attributes="download python:form_id + '.csv'">List and Results to CSV </a>
+	                    </li>
 	                </ul>
 	            </td>
                 <tal:comment replace="nothing">

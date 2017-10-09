@@ -449,6 +449,10 @@
             var data = [];
             var headers = [];
             var omitidx = [];
+	    var reportResult;
+	    if (type == 'result') {
+		reportResult = true;
+	    }
 
             // Get the headers, but only if not empty. Store the position index
             // of those columns that must be omitted later on rows walkthrouugh
@@ -461,6 +465,22 @@
                     omitidx.push(i);
                 }
             });
+
+	    // if analysis results are reported, get complete list of analysis service names and append to report header
+	    if (reportResult == true) {
+		    $.ajax({
+		    	url: window.portal_url + "/getAnalysisService",
+		    	type: 'POST',
+		    	async: false,
+		    	data: {'_authenticator': $('input[name="_authenticator"]').val()},
+		    	dataType: "json"
+		    }).done(function(result) {
+			for (var i = 1; i < result.length; i++) {
+				headers.push('"' + result[i] + '"');
+			}
+		    });
+	    }
+
             data.push(headers.join(","));
 
             // Iterate through all rows an append all data in an array
@@ -471,6 +491,8 @@
                 // Iterate through all cells from within the current row
 		if (checked) {
 		        var rowdata = [];
+			//var fieldName = "";
+			var requestId = "";
 		        $(this).find("td").each(function(c) {
 				// Should the current cell be omitted?
 				if ($.inArray(c, omitidx) > -1) {
@@ -481,13 +503,34 @@
 				// <element>content</element>
 				// <span class='after'>
 				var text = $(this).find("span.before").nextUntil("span.after").text();
+				var fieldName = $(this).children("span.alert").attr("field")
 				// If no format specified, always fallback to csv
 				text = text.replace('"', "'");
 				rowdata.push('"' + $.trim(text) + '"');
+				if (fieldName == "getRequestID")
+					requestId = text.replace('"', "");
 		        });
+
+			// If analysis results are reported, retrieve analysis results for each analysis request
+			if (reportResult == true) {
+				$.ajax({
+		    			url: window.portal_url + "/getAnalysisResults",
+		    			type: 'POST',
+		    			async: false,
+		    			data: {'_authenticator': $('input[name="_authenticator"]').val(),
+						'requestId': requestId },
+		    			dataType: "json"
+				}).done(function(result) {
+					for (var i = 1; i < result.length; i++) {
+						rowdata.push('"' + result[i] + '"');
+					}
+				});
+			}
+
 		        if (rowdata.length == headers.length) {
 		            data.push(rowdata.join(','));
 		        }
+
 		}
             });
             var output = '';

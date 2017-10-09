@@ -59,6 +59,55 @@ class ajaxGetContainers(BrowserView):
 
         return json.dumps(containers)
 
+class ajaxGetAnalysisService(BrowserView):
+    """Return complete list of active analysis services
+    """
+    def __call__(self):
+	
+        plone.protect.CheckAuthenticator(self.request)
+
+	bsc = getToolByName(self.context, 'bika_setup_catalog')
+
+        service_all = [c.Title for c in
+                bsc(portal_type = 'AnalysisService',
+                   inactive_state = 'active',
+                   sort_on = 'sortable_title')]
+
+        return json.dumps(service_all)
+
+class ajaxGetAnalysisResults(BrowserView):
+    """Return analysis results by analysis request ID
+    """
+    def __call__(self):
+	
+        plone.protect.CheckAuthenticator(self.request)
+	requestId = self.request.get("requestId", '0')
+	results = []
+
+	bsc = getToolByName(self.context, 'bika_setup_catalog')
+	bc = getToolByName(self.context, 'bika_analysis_catalog')
+
+        service_all = [c.Title for c in
+                bsc(portal_type = 'AnalysisService',
+                   inactive_state = 'active',
+                   sort_on = 'sortable_title')]
+
+	for service in service_all:
+		resultExist = False
+ 		for ar in bc(getRequestID=requestId,
+		Title = service,
+		cancellation_state = 'active'):
+			ar_obj = ar.getObject()
+			if ar.review_state not in ['retracted']:
+				result = ar_obj.getResult()
+				results.append(result)
+				resultExist = True
+		if not resultExist:
+			results.append("")
+			resultExist = False
+
+        return json.dumps(results)
+
 class ajaxServicePopup(BrowserView):
 
     template = ViewPageTemplateFile("templates/analysisservice_popup.pt")
